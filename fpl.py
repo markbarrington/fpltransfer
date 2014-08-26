@@ -4,12 +4,13 @@ from operator import itemgetter
 
 # Configuration values for this gameweek
 
-gameweek = 2
+gameweek = 3
 transfersavailable = 1
 
 # Player codes of current team
-currentplayers = [1718,44346,41135,42786,14664,59936,13017,26793,11735,56979,50089,19159,20480,49323,112139]
+currentplayers = [1718,44346,41135,42786,14664,37915,13017,26793,11735,56979,50089,19159,20480,49323,112139]
 currentteam = []
+currentteamvalue = 998
 
 # Global Variables
 players = []
@@ -21,7 +22,7 @@ squadcount = [2,5,5,3]
 squadsize = 15
 playmin = [1,3,0,1]
 playmax = [1,5,5,3]
-budget = 1000
+budget = currentteamvalue
 maxperteam = 3
 gamesperseason = 38.0
 
@@ -153,7 +154,7 @@ class fpl():
         if gameweek != 1:
             minutes += player['minutes'] * 2.0
             games += ((gameweek - 1) * 2.0)
-            if player['minutes'] == 0:
+            if player['minutes'] < (gameweek-1) * 60:
                 lap = lap / 10.0
                 twp = twp / 10.0
 
@@ -257,6 +258,7 @@ class fpl():
 
         # no more than 1000 value
         if fpl.teamvalue(team) > budget:
+            print "over budget"
             return False
 
         # Check for right number of each type of player
@@ -296,7 +298,7 @@ class fpl():
             # Then transfer in the player and remove the current player
             if player['type_name'] == currentplayer['type_name']:
                 if player['lookaheadpoints'] > currentplayer['lookaheadpoints']:
-                    if value + player['now_cost'] - currentplayer['now_cost'] <= budget:
+                    if value + player['now_cost'] - currentplayer['now_cost'] <= currentteamvalue:
                         sortedteam.remove(currentplayer)
                         sortedteam.append(player)
                         return sortedteam
